@@ -1,16 +1,11 @@
-import React, { useState } from "react";
-import {
-  HashRouter as Router,
-  Route,
-  Switch,
-  Redirect,
-} from "react-router-dom";
+import React from "react";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import Auth from "routes/Auth";
 import Home from "routes/Home";
 import Navigation from "components/Navigation";
 import Profile from "routes/Profile";
 
-const AppRouter = ({ isLoggedIn }) => {
+const AppRouter = ({ isLoggedIn, userObj }) => {
   //render시킬 routes는 로그인 여부에 따라 달라짐
   return (
     <Router>
@@ -21,7 +16,8 @@ const AppRouter = ({ isLoggedIn }) => {
           <>
             {/* fragment : 많은 요소들를 render하고 싶을 때(부모 요소가 없을 때), div, span에 넣기 싫을 때 */}
             <Route exact path="/">
-              <Home />
+              <Home userObj={userObj} />{" "}
+              {/* Home에 userObj를 공유(=props를 전달하는 것) */}
             </Route>
             <Route exact path="/profile">
               <Profile />

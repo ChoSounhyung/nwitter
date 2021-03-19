@@ -1,31 +1,28 @@
 import { dbService } from "fbase";
 import React, { useEffect, useState } from "react";
 
-const Home = () => {
+const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState([]);
-  const getNweets = async () => {
-    const dbNweets = await dbService.collection("nweets").get(); // async를 써야되기 때문에 개별적인 함수여야됨
-    // querySnapshot을 리턴함
-    dbNweets.forEach((document) => {
-      //console.log(document.data()));
-      const nweetObject = {
-        ...document.data(),
-        id: document.id,
-      };
-      setNweets((prev) => [nweetObject, ...prev]); // 모든 이전 nweets에 대해, 배열을 리턴함(새로 작성한 트윗, 그 이전 트윗들)
-      // set이 붙는 함수를 쓸 때 값 대신 함수를 전달할 수 있음
-    });
-  };
+
   useEffect(() => {
-    getNweets();
+    dbService.collection("nweets").onSnapshot((snapshot) => {
+      const nweetArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      // console.log(nweetArray);
+      setNweets(nweetArray);
+    }); // -> 이 방식은 forEach와 달리 re-render하지 않아도 됨
   }, []);
+
   const onSubmit = async (event) => {
     event.preventDefault();
     await dbService.collection("nweets").add({
       // promise를 리턴하면 async -await 해줘야됨
-      nweet,
+      text: nweet, // statedls nweet의 value
       createdAt: Date.now(),
+      creatorId: userObj.uid, // user id
     });
     setNweet(""); // submit 하고 초기화 하기
   };
@@ -52,7 +49,7 @@ const Home = () => {
       <div>
         {nweets.map((nweet) => (
           <div key={nweet.id}>
-            <h4>{nweet.nweet}</h4>
+            <h4>{nweet.text}</h4>
           </div>
         ))}
       </div>
