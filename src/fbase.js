@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/storage";
 
 // web app's Firebase configuration
 const firebaseConfig = {
@@ -18,3 +19,4 @@ export const firebaseInstance = firebase;
 
 export const authService = firebase.auth(); //authService를 많이 호출 할 것이므로 이렇게 export함
 export const dbService = firebase.firestore();
+export const storageService = firebase.storage();

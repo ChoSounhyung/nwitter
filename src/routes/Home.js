@@ -1,5 +1,5 @@
 import Nweet from "components/Nweet";
-import { dbService } from "fbase";
+import { dbService, storageService } from "fbase";
 import React, { useEffect, useState } from "react";
 
 const Home = ({ userObj }) => {
@@ -20,13 +20,13 @@ const Home = ({ userObj }) => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    await dbService.collection("nweets").add({
-      // promise를 리턴하면 async -await 해줘야됨
-      text: nweet, // statedls nweet의 value
-      createdAt: Date.now(),
-      creatorId: userObj.uid, // user id
-    });
-    setNweet(""); // submit 하고 초기화 하기
+    // await dbService.collection("nweets").add({
+    //   // promise를 리턴하면 async -await 해줘야됨
+    //   text: nweet, // statedls nweet의 value
+    //   createdAt: Date.now(),
+    //   creatorId: userObj.uid, // user id
+    // });
+    // setNweet(""); // submit 하고 초기화 하기
   };
   const onChange = (event) => {
     const {
