@@ -21,17 +21,24 @@ const Home = ({ userObj }) => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    const fileRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`);
-    const response = await fileRef.putString(attachment, "data_url");
-    console.log(response);
+    let attachmentUrl = "";
+    if (attachment != "") {
+      const attachmentRef = storageService
+        .ref()
+        .child(`${userObj.uid}/${uuidv4()}`);
+      const response = await attachmentRef.putString(attachment, "data_url");
+      attachmentUrl = await response.ref.getDownloadURL();
+    }
 
-    // await dbService.collection("nweets").add({
-    //   // promise를 리턴하면 async -await 해줘야됨
-    //   text: nweet, // statedls nweet의 value
-    //   createdAt: Date.now(),
-    //   creatorId: userObj.uid, // user id
-    // });
-    // setNweet(""); // submit 하고 초기화 하기
+    const nweetObj = {
+      text: nweet, // statedls nweet의 value
+      createdAt: Date.now(),
+      creatorId: userObj.uid, // user id
+      attachmentUrl,
+    };
+    await dbService.collection("nweets").add(nweetObj);
+    setNweet(""); // submit 하고 초기화 하기
+    setAttachment("");
   };
   const onChange = (event) => {
     const {
